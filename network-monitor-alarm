@@ -1,0 +1,37 @@
+#!/bin/bash
+configfile=/etc/network-monitor-alarm.conf
+
+while IFS='= ' read lhs rhs
+do
+    #echo "<${lsh}> <${rhs}>"
+    if [[ ! $lhs =~ ^# && -n $lhs ]]; then
+        declare $lhs="$rhs"
+        #echo "${lhs} = ${!lhs}"
+    fi
+done < $configfile
+
+if [[ -z $alarm_network || -z $alarm_internet || -z $test_domain ]]; then
+    echo "Error: configuration file not set"
+    exit 1
+fi
+
+# test if network exists (ping gateway)
+ping -q -w 1 -c 1 `ip r | grep default | cut -d ' ' -f 3` > /dev/null 2>&1
+gateway=$?
+
+if [[ $gateway == 0 ]]; then
+    # test if internet exists (ping
+    ping -q -w 1 -c 1 "$test_domain" > /dev/null 2>&1
+    internet=$?
+
+    if [[ $internet == 0 ]]; then
+        echo "Pass: internet active"
+    else
+        echo "Fail: No internet"
+        eval "$alarm_internet"
+    fi
+else
+    echo "Fail: No network found"
+    eval "$alarm_network"
+fi
+exit 0
