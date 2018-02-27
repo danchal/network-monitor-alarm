@@ -33,11 +33,11 @@ if [[ $gateway == 0 ]]; then
         # do nothing
         echo "Pass: internet active" > /dev/null
     else
-        error "Fail: No internet"
+        echo "Fail: No internet"
         eval "$alarm_internet"
     fi
 else
-    error "Fail: No network found"
+    echo "Fail: No network found"
     eval "$alarm_network"
 fi
 exit 0
