@@ -1,4 +1,9 @@
 #!/bin/bash
+
+function error {
+    echo "$1" >&2
+}
+
 configfile=/etc/network-monitor-alarm.conf
 
 while IFS='= ' read lhs rhs
@@ -11,7 +16,7 @@ do
 done < $configfile
 
 if [[ -z $alarm_network || -z $alarm_internet || -z $test_domain ]]; then
-    echo "Error: configuration file not set"
+    error "Error: configuration file not set"
     exit 1
 fi
 
@@ -25,13 +30,14 @@ if [[ $gateway == 0 ]]; then
     internet=$?
 
     if [[ $internet == 0 ]]; then
-        echo "Pass: internet active"
+        # do nothing
+        echo "Pass: internet active" > /dev/null
     else
-        echo "Fail: No internet"
+        error "Fail: No internet"
         eval "$alarm_internet"
     fi
 else
-    echo "Fail: No network found"
+    error "Fail: No network found"
     eval "$alarm_network"
 fi
 exit 0

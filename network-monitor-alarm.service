@@ -5,9 +5,9 @@ Wants=network-online.target
 
 [Service]
 User=nobody
-Group=gpio
+Group=nobody
 Type=simple
-StandardOutput=syslog
+StandardOutput=
 StandardError=syslog
 Restart=no
 ExecStart=/usr/local/sbin/network-monitor-alarm
