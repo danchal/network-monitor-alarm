@@ -1,9 +1,9 @@
 [Unit]
-Description=runs every 1 mins and on boot
+Description=runs every 3 mins and on boot
 
 [Timer]
 OnBootSec=1min
-OnUnitActiveSec=1min
+OnUnitActiveSec=3min
 
 [Install]
 WantedBy=timers.target
